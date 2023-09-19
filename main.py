@@ -165,6 +165,7 @@ def show_post(post_id):
             comment = Comment(text=comment_text, author=current_user.name, author_id=current_user.id, post_id=post_id)
             db.session.add(comment)
             db.session.commit()
+            return redirect(url_for('show_post', post_id=post_id))
         else:
             flash('You need to log in to comment on posts!')
             return redirect(url_for('login'))
