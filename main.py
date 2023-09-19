@@ -1,5 +1,6 @@
 from datetime import date
 import os
+from dotenv import load_dotenv, dotenv_values
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, g
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
@@ -14,17 +15,14 @@ from bs4 import BeautifulSoup
 from forms import CreatePostForm, RegisterForm, LoginForm, PostForm
 import smtplib
 
-os.environ['EMAIL'] = '12345ashermalik@gmail.com'
-os.environ['PASSWORD'] = 'eudpegvgpqmxbrmf'
+load_dotenv()
 
-EMAIL = os.environ.get('EMAIL')
-PASSWORD = os.environ.get('PASSWORD')
+EMAIL = os.getenv('EMAIL')
+PASSWORD = os.getenv('PASSWORD')
 
 app = Flask(__name__)
 
-os.environ['FLASK_KEY'] = 'nrFvSxpoMMZPnaHNk5iE'
-
-app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
+app.config['SECRET_KEY'] = os.getenv('FLASK_KEY')
 ckeditor = CKEditor(app)
 app.config['CKEDITOR_PKG_TYPE'] = 'standard'
 Bootstrap5(app)
@@ -32,7 +30,6 @@ Bootstrap5(app)
 global logged_in, user
 logged_in = False
 
-# TODO: Configure Flask-Login
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -83,13 +80,11 @@ class Comment(db.Model):
     parent_post = relationship('BlogPost', backref='comment', lazy=True)
     post_id = db.Column(db.Integer, db.ForeignKey('blog_post.id'), nullable=False)
 
-# TODO: Create a User table for all your registered users.
 
 
 with app.app_context():
     db.create_all()
 
-# TODO: Use Werkzeug to hash the user's password when creating a new user.
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     register_form = RegisterForm()
@@ -164,8 +159,8 @@ def show_post(post_id):
     gravatar = Gravatar(app, size=100, rating='g', default='retro', force_default=False, force_lower=False, use_ssl=False, base_url=None)
     requested_post = db.get_or_404(BlogPost, post_id)
     form = PostForm()
-    column_comment_post_id = db.session.query(Comment.text, Comment.post_id, Comment.author).all()
-    comment_post_id_tuple_list = [(BeautifulSoup(value1, 'html.parser').get_text(), value2, value3) for value1, value2, value3 in column_comment_post_id]
+    column_comment_post_id = db.session.query(Comment.text, Comment.post_id, Comment.author, Comment.id).all()
+    comment_post_id_tuple_list = [(BeautifulSoup(value1, 'html.parser').get_text(), value2, value3, value4) for value1, value2, value3, value4 in column_comment_post_id]
     if form.validate_on_submit():
         if current_user.is_authenticated:
             comment_text = form.comment.data
@@ -180,10 +175,9 @@ def show_post(post_id):
         logged_in = True
         user = User.query.get(current_user.id)
         return render_template("post.html", post=requested_post, user=user, logged_in=logged_in, form=form, comment_post_id_tuple_list=comment_post_id_tuple_list, gravatar=gravatar)
-    return render_template("post.html", post=requested_post, user=0, form=form, comment_post_id_tuple_list=comment_post_id_tuple_list, gravatar=gravatar)
+    return render_template("post.html", post=requested_post, user=None, form=form, comment_post_id_tuple_list=comment_post_id_tuple_list, gravatar=gravatar)
 
 
-# TODO: Use a decorator so only an admin user can create a new post
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():
@@ -243,6 +237,13 @@ def delete_post(post_id):
     db.session.commit()
     return redirect(url_for('get_all_posts'))
 
+@app.route('/delete-comment/<int:comment_id>/<int:post_id>')
+@admin_only
+def delete_comment(comment_id, post_id):
+    comment_to_delete = Comment.query.get(comment_id)
+    db.session.delete(comment_to_delete)
+    db.session.commit()
+    return redirect(url_for('show_post', post_id=post_id))
 
 @app.route("/about")
 def about():
@@ -266,6 +267,9 @@ def contact():
             s.sendmail(EMAIL, EMAIL, f'Subject:Bootstrap Blog\n\nName: {name}\n\nEmail: {email}\n\nMessage: {message}')
             s.quit()
         return render_template("contact.html", logged_in=logged_in)
+    elif request.method == 'POST':
+        flash('You need to be logged in to contact!')
+        return redirect(url_for('login'))
     return render_template("contact.html")
 
 

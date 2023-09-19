@@ -53,7 +53,10 @@
               </div>
               <div>{{comment[0]}}
               <div style="color: grey; font-size: 16px">
-                {{comment[2]}}
+                <span style="display: inline-block;">{{comment[2]}}</span>
+                {%if user.id==1%}
+                <a href="{{url_for('delete_comment', comment_id=comment[3], post_id=comment[1])}}" style="display: inline-block;">✘</a>
+                {%endif%}
               </div>
               </div>
             </li>
