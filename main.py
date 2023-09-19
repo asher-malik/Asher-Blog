@@ -1,6 +1,5 @@
 from datetime import date
 import os
-from dotenv import load_dotenv, dotenv_values
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, g
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
@@ -15,7 +14,6 @@ from bs4 import BeautifulSoup
 from forms import CreatePostForm, RegisterForm, LoginForm, PostForm
 import smtplib
 
-load_dotenv()
 
 EMAIL = os.getenv('EMAIL')
 PASSWORD = os.getenv('PASSWORD')
