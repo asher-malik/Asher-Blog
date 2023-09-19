@@ -1,4 +1,5 @@
 from datetime import date
+import os
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, g
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
@@ -13,11 +14,17 @@ from bs4 import BeautifulSoup
 from forms import CreatePostForm, RegisterForm, LoginForm, PostForm
 import smtplib
 
-EMAIL = '12345ashermalik@gmail.com'
-PASSWORD = 'eudpegvgpqmxbrmf'
+os.environ['EMAIL'] = '12345ashermalik@gmail.com'
+os.environ['PASSWORD'] = 'eudpegvgpqmxbrmf'
+
+EMAIL = os.environ.get('EMAIL')
+PASSWORD = os.environ.get('PASSWORD')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+
+os.environ['FLASK_KEY'] = 'nrFvSxpoMMZPnaHNk5iE'
+
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 ckeditor = CKEditor(app)
 app.config['CKEDITOR_PKG_TYPE'] = 'standard'
 Bootstrap5(app)
@@ -36,7 +43,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
 
 db = SQLAlchemy()
 db.init_app(app)
@@ -263,4 +270,4 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
