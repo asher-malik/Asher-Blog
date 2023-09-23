@@ -19,10 +19,10 @@ include "header.html" %}
 </header>
 
 <main class="mb-4">
-  <div class="container">
-    <div class="row">
-      <!-- TODO: add a flash message here for users registering twice -->
-      <div style="margin-left: 400px; color: red;">
+  <div class="container-fluid">
+   <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div style="color: red;">
     {% with messages = get_flashed_messages() %}
        {% if messages %}
       {% for message in messages %}
@@ -30,6 +30,8 @@ include "header.html" %}
       {%endfor%}
       {%endif%}
       {%endwith%}
+        </div>
+      </div>
     </div>
       <div class="col-lg-8 col-md-10 mx-auto">
         <!--TODO: render login form here-->
