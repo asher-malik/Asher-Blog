@@ -271,6 +271,15 @@ def contact():
         return redirect(url_for('login'))
     return render_template("contact.html")
 
+@app.route('/user-information', methods=['GET'])
+@admin_only
+def user_info():
+    logged_in=True
+    email_name = User.query.with_entities(User.name, User.email).all()
+    email_name_dict = {item[0]: item[1] for item in email_name}
+    return render_template('user_info.html', logged_in=logged_in, user_dict=email_name_dict)
+
+
 
 if __name__ == "__main__":
     app.run(debug=False)
