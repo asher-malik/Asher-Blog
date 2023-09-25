@@ -1,0 +1,39 @@
+{%include 'header.html'%}
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/user_info.jpg')"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h1>User Information</h1>
+          <span class="subheading">Information on users</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bd-example">
+  <table class="table table-light table-striped">
+      <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+  {%for info in user_dict.items()%}
+    <tr>
+      <th scope="row">{{loop.index}}</th>
+      <td>{{info[0]}}</td>
+      <td>{{info[1]}}</td>
+    </tr>
+  </tbody>
+    {%endfor%}
+
+  </table>
+</div>
+{%include 'footer.html'%}
