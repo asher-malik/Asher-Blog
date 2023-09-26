@@ -16,26 +16,25 @@
 </header>
 
 <div class="bd-example">
-  <div style="width: 60%; margin: 0 auto;">
-  <table class="table table-light table-striped">
+  <div class="table-responsive px-4">
+    <table class="table table-light table-striped">
       <thead>
-    <tr>
-      <th scope="col">Id</th>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-    </tr>
-  </thead>
-  <tbody>
-  {%for info in user_dict.items()%}
-    <tr>
-      <th scope="row">{{loop.index}}</th>
-      <td>{{info[0]}}</td>
-      <td>{{info[1]}}</td>
-    </tr>
-  </tbody>
-    {%endfor%}
-
-  </table>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for info in user_dict.items() %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ info[0] }}</td>
+            <td>{{ info[1] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 {%include 'footer.html'%}
