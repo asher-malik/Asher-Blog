@@ -265,6 +265,7 @@ def contact():
             s.login(EMAIL, PASSWORD)
             s.sendmail(EMAIL, EMAIL, f'Subject:Bootstrap Blog\n\nName: {name}\n\nEmail: {email}\n\nMessage: {message}')
             s.quit()
+            return render_template("contact.html", logged_in=logged_in, msg_sent=True)
         return render_template("contact.html", logged_in=logged_in)
     elif request.method == 'POST':
         flash('You need to be logged in to contact!')
